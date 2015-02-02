@@ -28,7 +28,7 @@ Or install it yourself as:
 
 ```ruby
 module Authentication
-  Aop["BankAccount#transfer:before"] do |account, *args, &blk|
+  Aop["BankAccount#transfer:before"].advice do |account, *args, &blk|
     can!(:transfer, account)
   end
 
@@ -44,7 +44,7 @@ end
 
 ```ruby
 module Analytics
-  Aop["User#sign_in:after"] do |target, *args, &blk|
+  Aop["User#sign_in:after"].advice do |target, *args, &blk|
     report("sign_in", user.id)
   end
 end
@@ -56,7 +56,7 @@ end
 
 ```ruby
 module Transactional
-  Aop["BankAccount#transfer:around"] do |joint_point, account, *args, &blk|
+  Aop["BankAccount#transfer:around"].advice do |joint_point, account, *args, &blk|
     start_transaction
     joint_point.call
     finish_transaction
@@ -66,7 +66,7 @@ end
 
 ## TODO (to specify)
 
-- multiple classes, methods and types of advices
+- multiple classes, methods and types of advices at once
 
 ## Contributing
 

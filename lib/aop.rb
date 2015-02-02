@@ -1,5 +1,5 @@
 require "aop/version"
+require "aop/pointcut"
 
 module Aop
-  # Your code goes here...
 end
