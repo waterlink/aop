@@ -25,8 +25,8 @@ module Aop
         klass.class_eval do
           methods.each do |method_ref|
             method_ref.decorate(klass) do |*args, &blk|
-              advised[self, *args, &blk]
-              method_ref[self, *args, &blk]
+              advised.call(self, *args, &blk)
+              method_ref.call(self, *args, &blk)
             end
           end
         end
@@ -55,7 +55,6 @@ module Aop
       def call(target, *args, &blk)
         alias_target(target).send(alias_name, *args, &blk)
       end
-      alias_method :[], :call
 
       private
 
