@@ -35,7 +35,7 @@ module Aop
 
     class MethodReference
       def self.from(m)
-        return new(m) if m[0] == "#"
+        return new(m) if m[0...1] == "#"
         Singleton.new(m)
       end
 
