@@ -26,8 +26,6 @@ Or install it yourself as:
 
 ### Before advice
 
-*Not implemented*
-
 ```ruby
 module Authentication
   Aop["BankAccount#transfer:before"].advice do |account, *args, &blk|
