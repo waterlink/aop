@@ -38,23 +38,27 @@ module Aop
       @classes.each do |klass|
         klass.class_eval do
           methods.each do |method_ref|
-            method_ref.decorate(klass, &body)
+            method_ref.decorate(klass, &body[method_ref])
           end
         end
       end
     end
 
     def before_advice(advised)
-      generic_advice(advised) do |*args, &blk|
-        advised.call(self, *args, &blk)
-        method_ref.call(self, *args, &blk)
+      generic_advice(advised) do |method_ref|
+        lambda do |*args, &blk|
+          advised.call(self, *args, &blk)
+          method_ref.call(self, *args, &blk)
+        end
       end
     end
 
     def after_advice(advised)
-      generic_advice(advised) do |*args, &blk|
-        method_ref.call(self, *args, &blk)
-        advised.call(self, *args, &blk)
+      generic_advice(advised) do |method_ref|
+        lambda do |*args, &blk|
+          method_ref.call(self, *args, &blk)
+          advised.call(self, *args, &blk)
+        end
       end
     end
 
