@@ -1,5 +1,7 @@
 # Aop
 
+[![Build Status](https://travis-ci.org/waterlink/aop.svg?branch=master)](https://travis-ci.org/waterlink/aop)
+
 Very thin AOP gem for Ruby.
 
 Thin and fast framework for Aspect Oriented Programming in Ruby.
