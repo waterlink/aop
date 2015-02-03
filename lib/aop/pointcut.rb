@@ -45,14 +45,14 @@ module Aop
     end
 
     def before_advice(advised)
-      generic_advise(advised) do |*args, &blk|
+      generic_advice(advised) do |*args, &blk|
         advised.call(self, *args, &blk)
         method_ref.call(self, *args, &blk)
       end
     end
 
     def after_advice(advised)
-      generic_advise(advised) do |*args, &blk|
+      generic_advice(advised) do |*args, &blk|
         method_ref.call(self, *args, &blk)
         advised.call(self, *args, &blk)
       end
