@@ -42,8 +42,6 @@ end
 
 ### After advice
 
-*Not implemented*
-
 ```ruby
 module Analytics
   Aop["User#sign_in:after"].advice do |target, *args, &blk|
