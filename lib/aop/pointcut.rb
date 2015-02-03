@@ -33,31 +33,28 @@ module Aop
       after_advice(advised)
     end
 
-    def before_advice(advised)
+    def generic_advice(advised, &body)
       methods = @methods
       @classes.each do |klass|
         klass.class_eval do
           methods.each do |method_ref|
-            method_ref.decorate(klass) do |*args, &blk|
-              advised.call(self, *args, &blk)
-              method_ref.call(self, *args, &blk)
-            end
+            method_ref.decorate(klass, &body)
           end
         end
       end
     end
 
+    def before_advice(advised)
+      generic_advise(advised) do |*args, &blk|
+        advised.call(self, *args, &blk)
+        method_ref.call(self, *args, &blk)
+      end
+    end
+
     def after_advice(advised)
-      methods = @methods
-      @classes.each do |klass|
-        klass.class_eval do
-          methods.each do |method_ref|
-            method_ref.decorate(klass) do |*args, &blk|
-              method_ref.call(self, *args, &blk)
-              advised.call(self, *args, &blk)
-            end
-          end
-        end
+      generic_advise(advised) do |*args, &blk|
+        method_ref.call(self, *args, &blk)
+        advised.call(self, *args, &blk)
       end
     end
 
