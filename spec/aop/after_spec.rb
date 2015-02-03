@@ -1,4 +1,4 @@
-RSpec.describe "Before advice" do
+RSpec.describe "After advice" do
   include FixtureLoader
 
   let(:spy) { double("Spy") }
@@ -6,18 +6,18 @@ RSpec.describe "Before advice" do
   before do
     load_fixture("BankAccount", "bank_account")
 
-    Aop["BankAccount#transfer:before"].advice do |account, *args, &blk|
-      spy.before(account, *args, &blk)
+    Aop["BankAccount#transfer:after"].advice do |account, *args, &blk|
+      spy.after(account, *args, &blk)
     end
   end
 
-  it "fires before #transfer" do
+  it "fires after #transfer" do
     account = BankAccount.new(spy)
     other = BankAccount.new(spy)
     amount = 55
 
-    expect(spy).to receive(:before).with(account, other, amount).ordered.once
     expect(spy).to receive(:inside).with(other, amount).ordered.once
+    expect(spy).to receive(:after).with(account, other, amount).ordered.once
 
     account.transfer(other, amount)
   end

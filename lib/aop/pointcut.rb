@@ -20,6 +20,20 @@ module Aop
     end
 
     def advice(&advised)
+      advices = @advices
+      advices.each do |advice|
+        _advice(advice, advised)
+      end
+    end
+
+    private
+
+    def _advice(advice, advised)
+      return before_advice(advised) if advice == "before"
+      after_advice(advised)
+    end
+
+    def before_advice(advised)
       methods = @methods
       @classes.each do |klass|
         klass.class_eval do
@@ -27,6 +41,20 @@ module Aop
             method_ref.decorate(klass) do |*args, &blk|
               advised.call(self, *args, &blk)
               method_ref.call(self, *args, &blk)
+            end
+          end
+        end
+      end
+    end
+
+    def after_advice(advised)
+      methods = @methods
+      @classes.each do |klass|
+        klass.class_eval do
+          methods.each do |method_ref|
+            method_ref.decorate(klass) do |*args, &blk|
+              method_ref.call(self, *args, &blk)
+              advised.call(self, *args, &blk)
             end
           end
         end

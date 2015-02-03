@@ -1,4 +1,5 @@
 require "aop"
+require "./spec/support/loader"
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
