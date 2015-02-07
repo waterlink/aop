@@ -56,8 +56,9 @@ module Aop
     def after_advice(advised)
       generic_advice(advised) do |method_ref|
         lambda do |*args, &blk|
-          method_ref.call(self, *args, &blk)
+          result = method_ref.call(self, *args, &blk)
           advised.call(self, *args, &blk)
+          result
         end
       end
     end

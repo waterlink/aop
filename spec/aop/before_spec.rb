@@ -19,6 +19,6 @@ RSpec.describe "Before advice" do
     expect(spy).to receive(:before).with(account, other, amount).ordered.once
     expect(spy).to receive(:inside).with(other, amount).ordered.once
 
-    account.transfer(other, amount)
+    expect(account.transfer(other, amount)).to eq(:a_result)
   end
 end
