@@ -13,16 +13,16 @@ module Aop
       @class_names = @class_spec.split(",")
       @classes = @class_names.map { |name| Object.const_get(name) }
 
-      @method_spec = spec.scan(/[#\.][^#\.:]+/)
+      @method_spec = spec.scan(/[#\.][^,#\.:]+/)
       @methods = @method_spec.map { |m| MethodReference.from(m) }
 
-      @advices = spec.scan(/[^:]:([^:]+)/).flatten
+      @advices = spec.scan(/[^:]:([^:,]+)/).flatten
     end
 
     def advice(&advised)
-      advices = @advices
-      advices.each do |advice|
-        _advice(advice, advised)
+      return _advice(@advices.first, advised) if @advices.count == 1
+      @advices.each do |advice|
+        Aop["#{@class_names.join(",")}#{@method_spec.join(",")}:#{advice}"].advice(&advised)
       end
     end
 

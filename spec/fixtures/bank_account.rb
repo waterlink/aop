@@ -4,6 +4,11 @@ class BankAccount < Struct.new(:spy)
     :a_result
   end
 
+  def withdraw(amount)
+    spy.withdraw(self, amount)
+    :a_result
+  end
+
   def self.transfer(spy, from, to, amount)
     spy.inside(spy, from, to, amount)
     :a_result
