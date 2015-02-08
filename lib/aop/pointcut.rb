@@ -95,7 +95,7 @@ module Aop
       end
 
       def call(target, *args, &blk)
-        alias_target(target).send(alias_name, *args, &blk)
+        target.send(alias_name, *args, &blk)
       end
 
       private

@@ -60,6 +60,20 @@ module Transactional
 end
 ```
 
+### Class methods
+
+Use `.method` notation:
+
+```ruby
+module Transactional
+  Aop["BankAccount.transfer:around"].advice do |joint_point, klass, *args, &blk|
+    start_transaction
+    joint_point.call
+    finish_transaction
+  end
+end
+```
+
 ## TODO (to specify)
 
 - multiple classes, methods and types of advices at once
