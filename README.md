@@ -74,9 +74,19 @@ module Transactional
 end
 ```
 
-## TODO (to specify)
+### Multiple classes, methods and advices
 
-- multiple classes, methods and types of advices at once
+*Not implemented*
+
+Use `,` to use multiple classes, methods and advices:
+
+```ruby
+module Analytics
+  Aop["User,Admin#sign_in,sign_up,sign_out:before,after"].advice do |target, *args, &blk|
+    report("auth_action", user.id)
+  end
+end
+```
 
 ## Contributing
 
