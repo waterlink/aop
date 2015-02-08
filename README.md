@@ -50,8 +50,6 @@ end
 
 ### Around advice
 
-*Not implemented*
-
 ```ruby
 module Transactional
   Aop["BankAccount#transfer:around"].advice do |joint_point, account, *args, &blk|
