@@ -30,6 +30,7 @@ module Aop
 
     def _advice(advice, advised)
       return before_advice(advised) if advice == "before"
+      return around_advice(advised) if advice == "around"
       after_advice(advised)
     end
 
@@ -58,6 +59,17 @@ module Aop
         lambda do |*args, &blk|
           result = method_ref.call(self, *args, &blk)
           advised.call(self, *args, &blk)
+          result
+        end
+      end
+    end
+
+    def around_advice(advised)
+      generic_advice(advised) do |method_ref|
+        lambda do |*args, &blk|
+          result = nil
+          joint_point = lambda { result = method_ref.call(self, *args, &blk) }
+          advised.call(joint_point, self, *args, &blk)
           result
         end
       end
