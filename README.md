@@ -86,6 +86,10 @@ module Analytics
 end
 ```
 
+## TODO
+
+- Fail hard and with descriptive error when unable to find a pointcut
+
 ## Contributing
 
 1. Fork it ( https://github.com/waterlink/aop/fork )
