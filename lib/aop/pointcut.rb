@@ -105,7 +105,7 @@ module Aop
       end
 
       def alias_name
-        @_alias_name ||= "__aop_#{SecureRandom.hex(10)}"
+        @_alias_name ||= :"__aop_#{SecureRandom.hex(10)}"
       end
 
       class Singleton < self
