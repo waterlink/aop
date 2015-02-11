@@ -92,7 +92,7 @@ RSpec.describe "Advanced advices" do
       it "declares proper reason" do
         expect { advice }.to raise_error(
           Aop::PointcutNotFound,
-          /Reason: #<NameError: (undefined method|Unable to find) [`']greeting' for (class|object) [`'](Class|#<Class:0x[0-9a-f]+>|BankAccount)'>/
+          /Reason: #<NameError: (undefined method|Unable to find) [`']greeting' for (class|object) ([`']Class'|[`']#<Class:0x[0-9a-f]+>'|BankAccount)>/
         )
       end
     end
