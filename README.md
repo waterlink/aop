@@ -86,9 +86,24 @@ module Analytics
 end
 ```
 
-## TODO
+### Handling missed pointcuts
 
-- Fail hard and with descriptive error when unable to find a pointcut
+When pointcut is gone, for example when method or class gets renamed, it is a potential bug, because some code will not be run. This library tackles this problem by failing hard when pointcut can not be found.
+
+Example:
+
+```ruby
+Aop["Admin#sign_in:after"].advice do |target, *args, &blk|
+  # .. do something ..
+end
+```
+
+Then somebody renames `Admin#sign_in` to `Admin#logout`, and when you run the code you will get:
+
+```
+PointcutNotFound: Unable to find pointcut Admin#sign_in
+ .. backtrace ..
+```
 
 ## Contributing
 
