@@ -30,6 +30,74 @@ RSpec.describe "Advanced advices" do
     end
   end
 
+  describe "missed pointcuts" do
+    describe "missed class" do
+      let(:advice) {
+        Aop["NonexistentKlass#helloworld,.greeting:before"].advice do |target, *args, &blk|
+          :do_something
+        end
+      }
+
+      it "fails with proper message" do
+        expect { advice }.to raise_error(
+          Aop::PointcutNotFound,
+          /Unable to find pointcut NonexistentKlass#helloworld,.greeting/
+        )
+      end
+
+      it "declares proper reason" do
+        expect { advice }.to raise_error(
+          Aop::PointcutNotFound,
+          /Reason: #<NameError: uninitialized constant NonexistentKlass>/
+        )
+      end
+    end
+
+    describe "missed instance method" do
+      let(:advice) {
+        Aop["BankAccount.transfer,#greeting:before"].advice do |target, *args, &blk|
+          :do_something
+        end
+      }
+
+      it "fails with proper message" do
+        expect { advice }.to raise_error(
+          Aop::PointcutNotFound,
+          /Unable to find pointcut BankAccount#greeting/
+        )
+      end
+
+      it "declares proper reason" do
+        expect { advice }.to raise_error(
+          Aop::PointcutNotFound,
+          /Reason: #<NameError: undefined method `greeting' for class `BankAccount'>/
+        )
+      end
+    end
+
+    describe "missed class method" do
+      let(:advice) {
+        Aop["BankAccount#transfer,.greeting:before"].advice do |target, *args, &blk|
+          :do_something
+        end
+      }
+
+      it "fails with proper message" do
+        expect { advice }.to raise_error(
+          Aop::PointcutNotFound,
+          /Unable to find pointcut BankAccount.greeting/
+        )
+      end
+
+      it "declares proper reason" do
+        expect { advice }.to raise_error(
+          Aop::PointcutNotFound,
+          /Reason: #<NameError: undefined method `greeting' for class `Class'>/
+        )
+      end
+    end
+  end
+
   describe "multiple classes, methods and advices" do
     before do
       Aop["BankAccount,CashAccount#transfer,#withdraw,.transfer:before,:after"].advice do |*args, &blk|

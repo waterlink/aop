@@ -5,13 +5,32 @@ module Aop
     Pointcut.new(pointcut_spec)
   end
 
+  class PointcutNotFound < StandardError
+    attr_reader :original_error
+
+    def initialize(pointcut_spec, original_error)
+      super("Unable to find pointcut #{pointcut_spec}")
+      @original_error = original_error
+    end
+
+    def to_s
+      "#{super}\n\tReason: #{original_error.inspect}"
+    end
+  end
+
   class Pointcut
     def initialize(spec)
       @spec = spec
 
       @class_spec = spec.scan(/^[^#\.]+/).first || ""
       @class_names = @class_spec.split(",")
-      @classes = @class_names.map { |name| Object.const_get(name) }
+      @classes = @class_names.map do |name|
+        begin
+          Object.const_get(name)
+        rescue NameError => err
+          raise PointcutNotFound.new(spec, err)
+        end
+      end
 
       @method_spec = spec.scan(/[#\.][^,#\.:]+/)
       @methods = @method_spec.map { |m| MethodReference.from(m) }
@@ -92,6 +111,8 @@ module Aop
           alias_method(new_name, name)
           define_method(name, &with)
         end
+      rescue NameError => err
+        raise PointcutNotFound.new(method_spec(target), err)
       end
 
       def call(target, *args, &blk)
@@ -100,8 +121,20 @@ module Aop
 
       private
 
+      def method_spec(target)
+        "#{target_name(target)}#{method_notation}#{@name}"
+      end
+
+      def method_notation
+        "#"
+      end
+
       def alias_target(target)
         target
+      end
+
+      def target_name(target)
+        target.name || target.inspect
       end
 
       def alias_name
@@ -109,6 +142,10 @@ module Aop
       end
 
       class Singleton < self
+        def method_notation
+          "."
+        end
+
         def alias_target(target)
           class << target; self; end
         end

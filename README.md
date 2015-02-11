@@ -101,7 +101,7 @@ end
 Then somebody renames `Admin#sign_in` to `Admin#logout`, and when you run the code you will get:
 
 ```
-PointcutNotFound: Unable to find pointcut Admin#sign_in
+Aop::PointcutNotFound: Unable to find pointcut Admin#sign_in
  .. backtrace ..
 ```
 
