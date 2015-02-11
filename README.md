@@ -102,7 +102,8 @@ Then somebody renames `Admin#sign_in` to `Admin#logout`, and when you run the co
 
 ```
 Aop::PointcutNotFound: Unable to find pointcut Admin#sign_in
- .. backtrace ..
+    Reason: #<NameError: undefined method `sign_in' for class `Admin'>
+    .. backtrace ..
 ```
 
 ## Contributing
