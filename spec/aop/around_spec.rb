@@ -8,6 +8,7 @@ RSpec.describe "Around advice" do
 
     Aop["BankAccount#transfer:around"].advice do |joint_point, account, *args, &blk|
       spy.before(account, *args, &blk)
+      spy.method_is(joint_point.method_name)
       joint_point.call
       spy.after(account, *args, &blk)
     end
@@ -19,6 +20,7 @@ RSpec.describe "Around advice" do
     amount = 55
 
     expect(spy).to receive(:before).with(account, other, amount).ordered.once
+    expect(spy).to receive(:method_is).with("#transfer").ordered.once
     expect(spy).to receive(:inside).with(other, amount).ordered.once
     expect(spy).to receive(:after).with(account, other, amount).ordered.once
 

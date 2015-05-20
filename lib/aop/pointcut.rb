@@ -87,11 +87,27 @@ module Aop
       generic_advice(advised) do |method_ref|
         lambda do |*args, &blk|
           result = nil
-          joint_point = lambda { result = method_ref.call(self, *args, &blk) }
+          joint_point = JointPoint.new(
+            method_ref.method_name,
+            lambda { result = method_ref.call(self, *args, &blk) }
+          )
           advised.call(joint_point, self, *args, &blk)
           result
         end
       end
+    end
+
+    class JointPoint
+      def initialize(method_name, action)
+        @method_name = method_name
+        @action = action
+      end
+
+      def call(*args)
+        @action.call(*args)
+      end
+
+      attr_reader :method_name
     end
 
     class MethodReference
@@ -119,10 +135,14 @@ module Aop
         target.send(alias_name, *args, &blk)
       end
 
+      def method_name
+        "#{method_notation}#{@name}"
+      end
+
       private
 
       def method_spec(target)
-        "#{target_name(target)}#{method_notation}#{@name}"
+        "#{target_name(target)}#{method_name}"
       end
 
       def method_notation
