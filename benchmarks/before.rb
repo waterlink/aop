@@ -42,8 +42,8 @@ def profile
   observers << MethodProfiler.observe(Example)
   observers << MethodProfiler.observe(Aop)
   observers << MethodProfiler.observe(Aop::Pointcut)
-  observers << MethodProfiler.observe(Aop::Pointcut::MethodReference)
-  observers << MethodProfiler.observe(Aop::Pointcut::MethodReference::Singleton)
+  observers << MethodProfiler.observe(Aop::MethodReference)
+  observers << MethodProfiler.observe(Aop::MethodReference::Singleton)
 
   10000.times do
     example.heavy_add(rand(1000), rand(1000))
