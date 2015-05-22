@@ -14,3 +14,4 @@ bundler_args: --without development
 script:
   - bundle exec rspec
   - bundle exec ruby integration/contracts.rb
+  - bundle exec ruby integration/contracts_pattern_matching.rb
