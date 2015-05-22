@@ -5,7 +5,47 @@ RSpec.describe "Advanced advices" do
 
   before do
     load_fixture("BankAccount", "bank_account")
+    load_fixture("OtherBankAccount", "other_bank_account")
     load_fixture("CashAccount", "cash_account")
+  end
+
+  describe "double advice" do
+    before do
+      Aop["BankAccount#transfer:around"].advice do |joint_point, *args, &blk|
+        joint_point.call
+      end
+
+      Aop["BankAccount#transfer:around"].advice do |joint_point, *args, &blk|
+        joint_point.call
+      end
+    end
+
+    it "works" do
+      account = BankAccount.new(spy)
+      other = BankAccount.new(spy)
+      amount = 55
+
+      expect(spy).to receive(:inside).with(other, amount).ordered.once
+
+      expect(account.transfer(other, amount)).to eq(:a_result)
+    end
+  end
+
+  describe "inheritance advice" do
+    before do
+      Aop["BankAccount,OtherBankAccount#transfer:before"].advice do |joint_point, *args, &blk|
+      end
+    end
+
+    it "works" do
+      account = OtherBankAccount.new(spy)
+      other = BankAccount.new(spy)
+      amount = 55
+
+      expect(spy).to receive(:inside).with(other, amount).ordered.once
+
+      expect(account.transfer(other, amount)).to eq(:a_result)
+    end
   end
 
   describe "class methods" do

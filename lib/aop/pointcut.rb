@@ -16,7 +16,6 @@ module Aop
       end
 
       @method_spec = spec.scan(/[#\.][^,#\.:]+/)
-      @methods = @method_spec.map { |m| MethodReference.from(m) }
 
       @advices = spec.scan(/[^:]:([^:,]+)/).flatten
     end
@@ -37,12 +36,11 @@ module Aop
     end
 
     def generic_advice(advised, &body)
-      methods = @methods
+      methods = @method_spec
       @classes.each do |klass|
-        klass.class_eval do
-          methods.each do |method_ref|
-            method_ref.decorate(klass, &body[method_ref])
-          end
+        methods.each do |method|
+          method_ref = MethodReference.from(method)
+          method_ref.decorate(klass, &body[method_ref])
         end
       end
     end
